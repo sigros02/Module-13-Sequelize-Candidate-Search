@@ -2,12 +2,12 @@
 // SG: name, username = login, location, avatar = avatar_url, email, html_url, and company
 // https://docs.github.com/en/rest/users/users?apiVersion=2022-11-28
 
-export interface Candidate {
-  name: string;
-  username: string;
-  location: string;
-  avatar: string;
-  email: string;
+export default interface Candidate {
+  name?: string;
+  login: string;
+  location?: string;
+  avatar_url: string;
+  email?: string;
   html_url: string;
-  company: string;
+  company?: string;
 }
