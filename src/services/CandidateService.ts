@@ -10,42 +10,32 @@ export default class CandidateService {
     if (savedCandidates) {
       this.savedCandidates = JSON.parse(savedCandidates);
     } else {
-      this.savedCandidates = [];
+      this.savedCandidates = [] as Candidate[];
     }
   }
   // SG: instance method to fetch Github users
   async fetchGithubUsers() {
-    try {
-      const users = await searchGithub();
-      return users.map((user: Candidate) => {
-        return {
-          login: user.login, // username
-          avatar_url: user.avatar_url,
-          html_url: user.html_url,
-        };
-      });
-    } catch (error) {
-      console.error("Error fetching Github users:", error);
-      return [] as Candidate[];
-    }
+    const users = await searchGithub();
+    return users.map((user: Candidate) => {
+      return {
+        login: user.login, // username
+        avatar_url: user.avatar_url,
+        html_url: user.html_url,
+      };
+    });
   }
   // SG: instance method to fetch github user by username (login property)
   async fetchGithubUser(username: string) {
-    try {
-      const user: Candidate = await searchGithubUser(username);
-      return {
-        name: user.name,
-        login: user.login, // username
-        location: user.location,
-        avatar_url: user.avatar_url,
-        email: user.email,
-        html_url: user.html_url,
-        company: user.company,
-      };
-    } catch (error) {
-      console.error("Error fetching Github user:", error);
-      throw new Error("Failed to fetch Github user");
-    }
+    const user: Candidate = await searchGithubUser(username);
+    return {
+      name: user.name,
+      login: user.login, // username
+      location: user.location,
+      avatar_url: user.avatar_url,
+      email: user.email,
+      html_url: user.html_url,
+      company: user.company,
+    };
   }
   // SG: instance method to check if candidate aleady exists in saved candidates
   isCandidate(login: string): boolean {

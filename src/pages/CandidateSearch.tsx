@@ -1,35 +1,31 @@
-// import { useState, useEffect } from "react";
-// import { searchGithub, searchGithubUser } from '../api/API';
+import { useEffect, useState } from "react";
 import CandidateService from "../services/CandidateService";
+import Candidate from "../models/Candidate";
+import CandidateCard from "../components/CandidateCard";
 
-const CandidateSearch = async () => {
-  // SG: create an instance of CandidateService
+const CandidateSearch = () => {
+  const [_candidates, setCandidates] = useState([] as Candidate[]);
+  const [candidate, setCandidate] = useState({} as Candidate);
   const candidateService = new CandidateService();
-  // SG: test the fetch methods
-  let users = await candidateService.fetchGithubUsers();
+  
 
-  try {
-    let user = await candidateService.fetchGithubUser(users[0].login);
-    // SG test adding a candidate to saved candidates
-    candidateService.addCandidate(user);
-    console.log("saved Candidates:", candidateService.savedCandidates);
-    // SG: test the isCandidate method
-    console.log("User login: ", user.login);
-    console.log("test", candidateService.isCandidate(user.login));
-  } catch (error) {
-    console.error("Error fetching user:", error);
-  }
+  // SG: fetch candidates from github one time when the component mounts
+  useEffect(() => {
+    const fetchCandidates = async () => {
+      const users = await candidateService.fetchGithubUsers();
+      setCandidates(users);
+      const user = await candidateService.fetchGithubUser(users[0].login);
+      setCandidate(user);
+    };
+    fetchCandidates();
+  }, []);
 
-  // SG: test the removeCandidate method
-  candidateService.removeCandidate(
-    candidateService.savedCandidates[
-      candidateService.savedCandidates.length - 1
-    ].login
+  return (
+    <div>
+      <h1>Candidate Search</h1>
+      <CandidateCard candidate={candidate} />
+    </div>
   );
-
-  console.log("saved Candidates:", candidateService.savedCandidates);
-  // SG: test save candidates
-  candidateService.saveCandidates();
 };
 
 export default CandidateSearch;
