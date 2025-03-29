@@ -26,7 +26,7 @@ export default class CandidateService {
       });
     } catch (error) {
       console.error("Error fetching Github users:", error);
-      return [];
+      return [] as Candidate[];
     }
   }
   // SG: instance method to fetch github user by username (login property)
@@ -44,12 +44,30 @@ export default class CandidateService {
       };
     } catch (error) {
       console.error("Error fetching Github user:", error);
-      return null;
+      throw new Error("Failed to fetch Github user");
     }
   }
-  // SG: instance method to add candidate to saved candidates
   // SG: instance method to check if candidate aleady exists in saved candidates
+  isCandidate(login: string): boolean {
+    return this.savedCandidates.some((candidate) => candidate.login === login);
+  }
+
+  // SG: instance method to add candidate to saved candidates
+  addCandidate(candidate: Candidate) {
+    this.savedCandidates.unshift(candidate);
+  }
   // SG: instance method to remove candidate from saved candidates
-  // SG: instance method to save candidate to local storage
-  // SG: instance method to remove candidate from local storage
+  removeCandidate(username: string) {
+    let savedIndex = this.savedCandidates.findIndex((candidate) => {
+      return candidate.login === username;
+    });
+    this.savedCandidates.splice(savedIndex, 1);
+  }
+  // SG: instance method to save candidates to local storage
+  saveCandidates() {
+    localStorage.setItem(
+      "savedCandidates",
+      JSON.stringify(this.savedCandidates)
+    );
+  }
 }
